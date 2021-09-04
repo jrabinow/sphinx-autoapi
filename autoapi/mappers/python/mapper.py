@@ -317,13 +317,9 @@ class PythonSphinxMapper(SphinxMapperBase):
             else:
                 parsed_data = Parser().parse_file(path)
             return parsed_data
-        except (IOError, TypeError, ImportError):
+        except ImportError as e:
             LOGGER.debug("Reason:", exc_info=True)
-            LOGGER.warning(
-                "Unable to read file: {0}".format(path),
-                type="autoapi",
-                subtype="not_readable",
-            )
+            LOGGER.warning(e, type="autoapi", subtype="not_readable")
         return None
 
     def _resolve_placeholders(self):

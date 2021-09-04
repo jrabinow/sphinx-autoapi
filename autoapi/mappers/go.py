@@ -51,20 +51,11 @@ class GoSphinxMapper(SphinxMapperBase):
         parser_command.append(path)
 
         try:
-            parsed_data = json.loads(subprocess.check_output(parser_command))
-            return parsed_data
-        except IOError:
-            LOGGER.warning(
-                "Error reading file: {0}".format(path),
-                type="autoapi",
-                subtype="not_readable",
-            )
-        except TypeError:
-            LOGGER.warning(
-                "Error reading file: {0}".format(path),
-                type="autoapi",
-                subtype="not_readable",
-            )
+            output = subprocess.check_output(parser_command)
+            return json.loads(output)
+        except TypeError as e:
+            LOGGER.debug("Reason:", exc_info=True)
+            LOGGER.warning(e, type="autoapi", subtype="not_readable")
         return None
 
     def create_class(self, data, options=None, **kwargs):

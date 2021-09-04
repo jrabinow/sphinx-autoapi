@@ -31,20 +31,11 @@ class JavaScriptSphinxMapper(SphinxMapperBase):
             subcmd = ".".join([subcmd, "cmd"])
 
         try:
-            parsed_data = json.loads(subprocess.check_output([subcmd, "-X", path]))
-            return parsed_data
-        except IOError:
-            LOGGER.warning(
-                "Error reading file: {0}".format(path),
-                type="autoapi",
-                subtype="not_readable",
-            )
-        except TypeError:
-            LOGGER.warning(
-                "Error reading file: {0}".format(path),
-                type="autoapi",
-                subtype="not_readable",
-            )
+            output = subprocess.check_output([subcmd, "-X", path])
+            return json.loads(output)
+        except TypeError as e:
+            LOGGER.debug("Reason:", exc_info=True)
+            LOGGER.warning(e, type="autoapi", subtype="not_readable")
         return None
 
     # Subclassed to iterate over items
